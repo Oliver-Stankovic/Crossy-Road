@@ -4,5 +4,5 @@
 
 struct Candidate {
     NeuralNetwork neuralnetwork;
-    double fitness;
+    double fitness = 0;
 };

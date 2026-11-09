@@ -74,6 +74,15 @@ public:
     }
 
     // lista svih tezina i biasa
+    vector<vector<Neuron>> getLayers() const {
+        return layers_;
+    }
+
+    void setLayers(vector<vector<Neuron>> inplayers){
+        layers_ = inplayers;
+    }
+
+    // lista svih tezina i biasa
     vector<double> getParameters() const {
         vector<double> parameters;
         for (const auto& layer : layers_) {
