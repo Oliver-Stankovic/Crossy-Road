@@ -74,8 +74,8 @@ public:
         vector<double> parameters;
         for (const auto& layer : layers_) {
             for (const Neuron& neuron : layer) {
-                for (double weight : neuron.weights) {
-                    parameters.push_back(weight);
+                for (double weights : neuron.weights) {
+                    parameters.push_back(weights);
                 }
                 parameters.push_back(neuron.bias);
             }
@@ -88,8 +88,8 @@ public:
         size_t index = 0;
         for (auto& layer : layers_) {
             for (Neuron& neuron : layer) {
-                for (double& weight : neuron.weights) {
-                    weight = parameters[index++];
+                for (double& weights : neuron.weights) {
+                    weights = parameters[index++];
                 }
                 neuron.bias = parameters[index++];
             }
