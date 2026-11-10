@@ -24,8 +24,8 @@ struct Neuron {
             sum += inputs[i] * weights[i];
         }
 
-        // bez sigmoide
-        return sum;
+        // NOVO: sigmoida se primjenjuje na sva 3 neurona
+        return 1.0 / (1.0 + exp(-sum));
     }
 };
 

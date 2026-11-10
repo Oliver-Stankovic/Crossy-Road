@@ -23,8 +23,16 @@ struct GA_Config{
     double blendAlpha          = 0.75;  // BLX-alpha: how far children may stray
     uint32_t seed         = 42;   // RNG seed (reproducibility)
     size_t reportEvery    = 25;   // print stats every N generations
-    vector<double> input = {1.0, 1.0};
-    vector<double> target = {1.0}; //treba osigurati da odgovorava arhitekturi
+    
+    // NOVO - zaminila san input i target sa examples i zeljeniIzlazi
+    vector<vector<double>> examples = {
+        {0.0, 0.0},
+        {0.0, 1.0},
+        {1.0, 0.0},
+        {1.0, 1.0}
+    };
+    
+    vector<double> zeljeniIzlazi = {0.0, 0.0, 0.0, 1.0};
 };
 
 

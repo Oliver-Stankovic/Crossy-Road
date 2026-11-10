@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <random>
 #include <optional>
 #include <algorithm>
@@ -20,25 +21,48 @@ public:
             throw std::invalid_argument("tournamentSize must be >= 1");
     }
 
-    
+    Candidate run() {
+        initialisePopulation();
+        evaluateAll(population_);
+        sortByFitness(population_);
+
+        population_ = nextGeneration();
+        evaluateAll(population_);
+        sortByFitness(population_);
+
+        return population_.front();
+    }
 
 private:
+    // izvolte
+    vector<Candidate> nextGeneration();
 
+
+    // NOVO - stvaranje populacije san zaminila sa funkcijon koja svakoj mrezi daje seed
     void initialisePopulation() {
-        //NN_Config nnconfig;
-        for (size_t i = 0; i<cfg_.populationSize; ++i){
-            population_.push_back(Candidate{NeuralNetwork(NN_Config()), 0});
-        }
-    }
+    population_.clear();
 
-    void evaluateAll(vector<Candidate>& pop) const {
-        for (Candidate& cand : pop){
-            vector<double> output = cand.neuralnetwork.forward(cfg_.input);
-            for (size_t i = 0; i<cfg_.target.size(); i++){
-                cand.fitness += squared_difference(output[i], cfg_.target[i]);
-            }
-        }
+    for (size_t i = 0; i < cfg_.populationSize; ++i) {
+        NN_Config config;
+        config.seed = rng_();
+
+        population_.push_back(Candidate{NeuralNetwork(config), 0.0});
     }
+}
+
+    // NOVO - ocjenjivanje svake mreze san zaminila sa prosjecnon pogreskom
+    void evaluateAll(vector<Candidate>& pop) const {
+    for (Candidate& cand : pop) {
+        double ukupnaPogreska = 0.0;
+
+        for (size_t i = 0; i < cfg_.examples.size(); ++i) {
+            auto output = cand.neuralnetwork.forward(cfg_.examples[i]);
+            ukupnaPogreska += squared_difference(output[0], cfg_.zeljeniIzlazi[i]);
+        }
+
+        cand.fitness = ukupnaPogreska / cfg_.examples.size();
+    }
+}
 
     static void sortByFitness(vector<Candidate>& pop) {
         sort(pop.begin(), pop.end(),
@@ -72,7 +96,7 @@ private:
             uniform_int_distribution<std::size_t> coinflip(0, 1);
             if (coinflip(rng_) == 0){
                 child_layers.push_back(a.getLayers()[i]);
-            }else{
+            } else{
                 child_layers.push_back(b.getLayers()[i]);
             }
         }
@@ -80,9 +104,18 @@ private:
         return child;
     }
 
-    void mutate(NeuralNetwork& nnetwork){
-        uniform_real_distribution<double> coin(0.0, 1.0);
-    }
+    // NOVO - promijeni jedan nasumicno odabran parametar
+    void mutate(NeuralNetwork& network) {
+        auto parametri = network.getParameters();
+
+        uniform_int_distribution<size_t> odaberiParametar(0, parametri.size() - 1);
+        uniform_real_distribution<double> odaberiPromjenu(-0.5, 0.5);
+
+        size_t indeks = odaberiParametar(rng_);
+        parametri[indeks] += odaberiPromjenu(rng_);
+
+        network.setParameters(parametri);
+}
 
     // ---- Step 5: build the next generation ---------------------------------
     // Precondition: population_ is sorted best-first (so elites are at front).
