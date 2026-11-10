@@ -10,6 +10,7 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
+file(COPY "assets/" DESTINATION "${CMAKE_BINARY_DIR}")
 file(GLOB_RECURSE ProjektR_Sources "${CMAKE_SOURCE_DIR}/src/model/*.cpp" "${CMAKE_SOURCE_DIR}/src/gui/*.cpp")
 add_executable(Projekt-R ${ProjektR_Sources})
 target_compile_features(Projekt-R PRIVATE cxx_std_17)

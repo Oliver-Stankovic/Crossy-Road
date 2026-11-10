@@ -6,8 +6,8 @@
 
 constexpr int32_t MAP_WIDTH = 15;
 constexpr float OBSTACLE_DISTANCE = 4;
-constexpr float OBSTACLE_SIZE_MIN = 2;
-constexpr float OBSTACLE_SIZE_MAX = 4;
+constexpr float LOG_SIZE_MIN = 2;
+constexpr float LOG_SIZE_MAX = 4;
 
 using namespace std;
 enum class RowType
@@ -27,7 +27,27 @@ class Row
 
     void AddObstacle()
     {
-        const float randomSize = static_cast<float>(rand()) / RAND_MAX * (OBSTACLE_SIZE_MAX - OBSTACLE_SIZE_MIN) + OBSTACLE_SIZE_MIN;
+        float randomSize = 0;
+        switch (type)
+        {
+        case RowType::Grass:
+            randomSize = 1;
+            break;
+        case RowType::Road:
+            randomSize = static_cast<float>(rand()) / RAND_MAX;
+            if (randomSize < 0.6f)
+                randomSize = 1;
+            else if (randomSize < 0.8f)
+                randomSize = 2;
+            else
+                randomSize = 3;
+            break;
+        case RowType::River:
+            randomSize = static_cast<float>(rand()) / RAND_MAX * (LOG_SIZE_MAX - LOG_SIZE_MIN) + LOG_SIZE_MIN;
+            break;
+        default:
+            break;
+        }
         obstacles.emplace_back();
         if (speed > 0)
             obstacles.back().positionX = -randomSize;
@@ -67,6 +87,10 @@ public:
 
             obstacles.emplace_back(); // Right edge
             obstacles.back().positionX = MAP_WIDTH - 1;
+            obstacles.back().sizeX = 1;
+
+            obstacles.emplace_back(); // One random
+            obstacles.back().positionX = rand() % (MAP_WIDTH - 2) + 1;
             obstacles.back().sizeX = 1;
         }
     }
