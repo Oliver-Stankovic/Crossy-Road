@@ -24,15 +24,15 @@ struct GA_Config{
     uint32_t seed         = 42;   // RNG seed (reproducibility)
     size_t reportEvery    = 25;   // print stats every N generations
     
-    // NOVO - zaminila san input i target sa examples i zeljeniIzlazi
-    vector<vector<double>> examples = {
+    //
+    vector<vector<double>> input = {
         {0.0, 0.0},
         {0.0, 1.0},
         {1.0, 0.0},
         {1.0, 1.0}
     };
     
-    vector<double> zeljeniIzlazi = {0.0, 0.0, 0.0, 1.0};
+    vector<vector<double>> target = {{0.0}, {0.0}, {0.0}, {1.0}};
 };
 
 

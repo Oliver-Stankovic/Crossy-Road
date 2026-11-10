@@ -26,42 +26,40 @@ public:
         evaluateAll(population_);
         sortByFitness(population_);
 
-        population_ = nextGeneration();
-        evaluateAll(population_);
-        sortByFitness(population_);
+        for (std::size_t gen = 1; gen <= cfg_.generations; ++gen) {
+            population_ = nextGeneration();  
+            evaluateAll(population_);
+            sortByFitness(population_);
+            if (population_.front().fitness < best_.value().fitness)
+                best_ = population_.front();  
+        }
 
         return population_.front();
     }
 
 private:
-    // izvolte
-    vector<Candidate> nextGeneration();
-
 
     // NOVO - stvaranje populacije san zaminila sa funkcijon koja svakoj mrezi daje seed
     void initialisePopulation() {
-    population_.clear();
+        population_.clear();
 
-    for (size_t i = 0; i < cfg_.populationSize; ++i) {
-        NN_Config config;
-        config.seed = rng_();
+        for (size_t i = 0; i < cfg_.populationSize; ++i) {
+            NN_Config config;
+            config.seed = rng_();
 
-        population_.push_back(Candidate{NeuralNetwork(config), 0.0});
-    }
+            population_.push_back(Candidate{NeuralNetwork(config), 0.0});
+        }
 }
 
-    // NOVO - ocjenjivanje svake mreze san zaminila sa prosjecnon pogreskom
+    //--------------------------------------------------
+    //Evaluira sve jedinke u populaciji na temelju odredene
+    //funckije kvalitete
+    //--------------------------------------------------
     void evaluateAll(vector<Candidate>& pop) const {
-    for (Candidate& cand : pop) {
-        double ukupnaPogreska = 0.0;
-
-        for (size_t i = 0; i < cfg_.examples.size(); ++i) {
-            auto output = cand.neuralnetwork.forward(cfg_.examples[i]);
-            ukupnaPogreska += squared_difference(output[0], cfg_.zeljeniIzlazi[i]);
+        for (Candidate& cand : pop) {
+            SrednjaSrednjih(cand, cfg_.input, cfg_.target);
+            //kod je prebacen u "outputevaluators.h"
         }
-
-        cand.fitness = ukupnaPogreska / cfg_.examples.size();
-    }
 }
 
     static void sortByFitness(vector<Candidate>& pop) {

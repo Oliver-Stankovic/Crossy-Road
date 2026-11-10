@@ -33,20 +33,20 @@ class NeuralNetwork {
 public:
     // neurone slazemo u slojeve (skriveni i izlazni)
     NeuralNetwork(const NN_Config config){
-    inputCount_ = config.architecture.front(); 
-    rng_.seed(config.seed);
-    uniform_real_distribution<double> initialvalue(config.lowerinit, config.upperinit);
-    for (size_t layer = 1; layer < config.architecture.size(); ++layer) {
-        vector<Neuron> neurons;
-        for (size_t n = 0; n < config.architecture[layer]; ++n) {
-            Neuron neuron;
-            for (size_t i = 0; i < config.architecture[layer - 1]; ++i) {
-                neuron.weights.push_back(initialvalue(rng_));
+        inputCount_ = config.architecture.front(); 
+        rng_.seed(config.seed);
+        uniform_real_distribution<double> initialvalue(config.lowerinit, config.upperinit);
+        for (size_t layer = 1; layer < config.architecture.size(); ++layer) {
+            vector<Neuron> neurons;
+            for (size_t n = 0; n < config.architecture[layer]; ++n) {
+                Neuron neuron;
+                for (size_t i = 0; i < config.architecture[layer - 1]; ++i) {
+                    neuron.weights.push_back(initialvalue(rng_));
+                }
+                neurons.push_back(neuron);
             }
-            neurons.push_back(neuron);
+            layers_.push_back(neurons);
         }
-        layers_.push_back(neurons);
-    }
 }
 
     // prolaz unaprijed: izlazi jednog sloja postaju ulazi sljedeceg
