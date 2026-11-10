@@ -12,7 +12,6 @@ class GeneticAlgorithm{
 public: 
     GeneticAlgorithm(GA_Config config)
         :  cfg_(config), rng_(config.seed) {
-        // Defensive checks: catch settings that would silently break the loop.
         if (cfg_.populationSize < 2)
             throw std::invalid_argument("populationSize must be >= 2");
         if (cfg_.eliteCount >= cfg_.populationSize)
@@ -21,6 +20,7 @@ public:
             throw std::invalid_argument("tournamentSize must be >= 1");
     }
 
+    
 
 private:
 
@@ -82,6 +82,33 @@ private:
 
     void mutate(NeuralNetwork& nnetwork){
         uniform_real_distribution<double> coin(0.0, 1.0);
+    }
+
+    // ---- Step 5: build the next generation ---------------------------------
+    // Precondition: population_ is sorted best-first (so elites are at front).
+    std::vector<Candidate> nextGeneration() {
+        std::vector<Candidate> next;
+        next.reserve(cfg_.populationSize);
+
+        // Elitism: copy the best individuals unchanged so progress is never lost.
+        for (std::size_t i = 0; i < cfg_.eliteCount; ++i)
+            next.push_back(population_[i]);
+
+        // Fill the rest with offspring.
+        std::uniform_real_distribution<double> coin(0.0, 1.0);
+        while (next.size() < cfg_.populationSize) {
+            const Candidate& p1 = tournamentSelect();
+            const Candidate& p2 = tournamentSelect();
+
+            Candidate child{NN_Config()};
+            // With probability crossoverRate recombine; otherwise clone parent 1.
+            child.neuralnetwork = (coin(rng_) < cfg_.crossoverRate)
+                              ? crossover(p1.neuralnetwork, p2.neuralnetwork)
+                              : p1.neuralnetwork;
+            mutate(child.neuralnetwork);
+            next.push_back(std::move(child));
+        }
+        return next;
     }
 
     GA_Config cfg_;
