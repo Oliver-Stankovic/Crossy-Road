@@ -16,10 +16,11 @@ class CrossyRoadModel
     Vector2f playerPosition;
     vector<Row> rows;
     int32_t lastRowIndex = 0;
+    uint32_t playerScore = 0;
 
     void AddRow(const RowType type)
     {
-        const float speed = type != RowType::Grass ? lastRowIndex / 10.f + 0.1f + (rand() % 15 / 10.f) : 0.f;
+        const float speed = type != RowType::Grass ? lastRowIndex / 20.f + 0.2f + (rand() % 15 / 10.f) : 0.f;
         rows.emplace_back();
         rows.back().Setup(type, (rand() % 2 ? 1.f : -1.f) * speed);
         lastRowIndex++;
@@ -32,6 +33,10 @@ public:
     bool isPlayerAlive() const
     {
         return playerAlive;
+    }
+    uint32_t getPlayerScore() const
+    {
+        return playerScore;
     }
     Vector2f getPlayerPosition() const
     {
@@ -89,11 +94,11 @@ public:
         {
         case Input::Left:
             if (playerPosition.x > 0)
-                playerMove = Vector2f(-1, 0);
+                playerMove = Vector2f(-0.5f, 0);
             break;
         case Input::Right:
             if (playerPosition.x < MAP_WIDTH - 1)
-                playerMove = Vector2f(1, 0);
+                playerMove = Vector2f(0.5f, 0);
             break;
         case Input::Up:
             playerMove = Vector2f(0, -1);
@@ -106,6 +111,8 @@ public:
             break;
         }
         playerPosition += playerMove;
+        if (std::abs(playerPosition.y) > playerScore)
+            playerScore = std::abs(playerPosition.y);
 
         switch (rows.at(getPlayerRowIndex()).getType())
         {
@@ -137,5 +144,6 @@ public:
         for (Row& n : rows)
             n.Update(deltaTime);
     }
+
 };
 
