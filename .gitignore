@@ -2,4 +2,4 @@ build/
 versions/
 .vscode/
 examples/
-*.exe
+.idea/

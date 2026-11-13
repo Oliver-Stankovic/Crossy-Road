@@ -14,4 +14,6 @@ cmake ..
 cmake --build .
 ```
 
+Eventualno za veću brzinu build-a se može koristiti `cmake --build . -j` umjesto `cmake --build .`, čime se koristi više jezgri računala.
+
 Ako sve prođe kako spada, izvršiva datoteka `Projekt-R` će se nalaziti u direktoriju `build`.
