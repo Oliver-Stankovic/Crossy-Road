@@ -200,6 +200,18 @@ public:
             RenderBackground();
             RenderForeground(true);
             RenderForeground(false);
+            // Render raycasts
+            /*if (model->isPlayerAlive())
+            {
+                vector<float> rays = model->castRays(32);
+                const float angle = 2 * 3.141592f / rays.size();
+                for (int32_t i = 0; i < rays.size(); i++)
+                {
+                    const Vector2f dir = Vector2f(std::cos(angle * i), -std::sin(angle * i)) * rays.at(i);
+                    array<Vertex, 2> line = {Vertex{model->getPlayerPosition() + Vector2f(0.5f, 0.5f)}, {model->getPlayerPosition() + Vector2f(0.5f, 0.5f) + dir}};
+                    window.draw(line.data(), line.size(), PrimitiveType::Lines);
+                }
+            }*/
 
             window.setView(uiView);
             score->setPosition(Vector2f());
