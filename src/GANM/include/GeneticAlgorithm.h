@@ -7,7 +7,7 @@
 
 #include "configs.h"
 #include "candidate.h"
-#include "outputevaluators.h"
+#include "evaluationfuncs.h"
 
 class GeneticAlgorithm{
 public: 
@@ -62,7 +62,7 @@ private:
     //--------------------------------------------------
     void evaluateAll(vector<Candidate>& pop) const {
         for (Candidate& cand : pop) {
-            BinarnaFunkcija(cand, cfg_.input, cfg_.target);
+            SredinaKvadratnihRazlika(cand, cfg_.input, cfg_.target);
             //kod je prebacen u "outputevaluators.h"
         }
 }

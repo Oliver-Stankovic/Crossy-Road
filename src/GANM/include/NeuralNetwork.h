@@ -1,12 +1,11 @@
 #pragma once    
 
-#include <cmath>
-#include <cstddef>
-#include <stdexcept>
 #include <vector>
 #include <random>
+#include <functional>
 
 #include "configs.h"
+#include "activationfuncs.h"
 
 using namespace std;
 
@@ -14,6 +13,7 @@ using namespace std;
 struct Neuron {
     vector<double> weights;
     double bias = 0.0;
+    function<double(double)> activation;
 
     // izlaz neurona
     double calculate(const vector<double>& inputs) const {
@@ -24,8 +24,11 @@ struct Neuron {
             sum += inputs[i] * weights[i];
         }
 
-        // NOVO: sigmoida se primjenjuje na sve neurone
-        return 1.0 / (1.0 + exp(-sum));
+        // Aktivacijska funkcija
+        if (activation){
+            sum = activation(sum);
+        }
+        return sum;
     }
 };
 
@@ -44,6 +47,9 @@ public:
                     neuron.weights.push_back(initialvalue(rng_));
                 }
                 neuron.bias = initialvalue(rng_); //pocetni bias nije 0.0
+                if (layer != (config.architecture.size()-1)){
+                    neuron.activation = ReLU;
+                }
                 neurons.push_back(neuron);
             }
             layers_.push_back(neurons);

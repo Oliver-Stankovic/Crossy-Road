@@ -11,19 +11,27 @@ int main() {
 
     Candidate najbolji = algoritam.run();
 
-    cout << "broj kandidata: " << gaconfig.populationSize << '\n';
-    cout << "najbolja pocetna pogreska: " << najbolji.fitness << '\n';
+    cout << "Number of candidates: " << gaconfig.populationSize << '\n';
+    cout << "Best candidate fitness: " << najbolji.fitness << '\n';
+
 
     // NOVO - provjera najbolje mreze na sva cetiri AND primjera
     for (size_t i = 0; i < gaconfig.input.size(); ++i) {
         const auto& ulaz = gaconfig.input[i];
-        double izlaz = najbolji.neuralnetwork.forward(ulaz)[0];
-        int odluka = (izlaz >= 0.5) ? 1 : 0;
+        vector<double> izlaz = najbolji.neuralnetwork.forward(ulaz);
+        
 
-        cout << "ulaz: [" << ulaz[0] << ", " << ulaz[1] << "]"
-         << ", izlaz mreze: " << izlaz
-         << ", odluka: " << odluka
-         << ", zeljeno: [";
+        cout << "ulaz: [" ;
+        for (size_t j = 0; j < ulaz.size(); ++j) {
+            if (j > 0) cout << ", ";
+            cout << ulaz[j];
+        }
+        cout << "], izlaz mreze: [";
+        for (size_t j = 0; j < izlaz.size(); ++j) {
+            if (j > 0) cout << ", ";
+            cout << izlaz[j];
+        }
+        cout << "], zeljeno: [";
         for (size_t j = 0; j < gaconfig.target[i].size(); ++j) {
             if (j > 0) cout << ", ";
             cout << gaconfig.target[i][j];
