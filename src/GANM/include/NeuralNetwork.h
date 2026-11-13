@@ -24,7 +24,7 @@ struct Neuron {
             sum += inputs[i] * weights[i];
         }
 
-        // NOVO: sigmoida se primjenjuje na sva 3 neurona
+        // NOVO: sigmoida se primjenjuje na sve neurone
         return 1.0 / (1.0 + exp(-sum));
     }
 };
@@ -33,7 +33,7 @@ class NeuralNetwork {
 public:
     // neurone slazemo u slojeve (skriveni i izlazni)
     NeuralNetwork(const NN_Config config){
-        inputCount_ = config.architecture.front(); 
+        //inputCount_ = config.architecture.front(); 
         rng_.seed(config.seed);
         uniform_real_distribution<double> initialvalue(config.lowerinit, config.upperinit);
         for (size_t layer = 1; layer < config.architecture.size(); ++layer) {
@@ -43,6 +43,7 @@ public:
                 for (size_t i = 0; i < config.architecture[layer - 1]; ++i) {
                     neuron.weights.push_back(initialvalue(rng_));
                 }
+                neuron.bias = initialvalue(rng_); //pocetni bias nije 0.0
                 neurons.push_back(neuron);
             }
             layers_.push_back(neurons);
@@ -50,7 +51,7 @@ public:
 }
 
     // prolaz unaprijed: izlazi jednog sloja postaju ulazi sljedeceg
-    vector<double> forward(const vector<double>& inputs) const {
+    vector<double> forward(const vector<double> inputs) const {
         vector<double> values = inputs;
         for (const auto& layer : layers_) {
             vector<double> outputs;
@@ -87,8 +88,8 @@ public:
         vector<double> parameters;
         for (const auto& layer : layers_) {
             for (const Neuron& neuron : layer) {
-                for (double weights : neuron.weights) {
-                    parameters.push_back(weights);
+                for (double weight : neuron.weights) {
+                    parameters.push_back(weight);
                 }
                 parameters.push_back(neuron.bias);
             }
@@ -101,16 +102,30 @@ public:
         size_t index = 0;
         for (auto& layer : layers_) {
             for (Neuron& neuron : layer) {
-                for (double& weights : neuron.weights) {
-                    weights = parameters[index++];
+                for (double& weight : neuron.weights) {
+                    weight = parameters[index++];
                 }
                 neuron.bias = parameters[index++];
             }
         }
     }
 
+    void outputParameters(){
+        cout << "----------------------\n";
+        for (auto& layer : layers_) {
+            cout << "\n";
+            for (Neuron& neuron : layer) {
+                for (double& weight : neuron.weights) {
+                    cout << weight << ", ";
+                }
+                cout << "Bias: " << neuron.bias << "\n";
+            }
+        }
+        cout << "---------------------\n";
+    }
+
 private:
-    size_t inputCount_;
+    //size_t inputCount_;
     vector<vector<Neuron>> layers_;
     mt19937 rng_;
 };

@@ -20,13 +20,27 @@ T difference_of_squares(T a, T b) {
 //kvadrirane razlike izmedu izlaza mreze i trazene
 //vrijednosti
 //------------------------------------------
-void SrednjaSrednjih(Candidate& cand, vector<vector<double>> input, vector<vector<double>> target){
+void SredinaKvadratnihRazlika(Candidate& cand, vector<vector<double>> input, vector<vector<double>> target){
     double ukupnaPogreska = 0.0;
     for (size_t i = 0; i < input.size(); ++i) {
         vector<double> output = cand.neuralnetwork.forward(input[i]);
         double inputPogreska = 0.0;
         for (size_t j = 0; j < output.size(); ++j){
             inputPogreska += squared_difference(output[j], target[i][j]);
+        }
+        ukupnaPogreska += inputPogreska / output.size();
+    }
+    cand.fitness = ukupnaPogreska / input.size();
+}
+
+void BinarnaFunkcija(Candidate& cand, vector<vector<double>> input, vector<vector<double>> target){
+    double ukupnaPogreska = 0.0;
+    for (size_t i = 0; i < input.size(); ++i) {
+        vector<double> output = cand.neuralnetwork.forward(input[i]);
+        double inputPogreska = 0.0;
+        for (size_t j = 0; j < output.size(); ++j){
+            double odluka = (output[j] >= 0.5) ? 1 : 0;
+            inputPogreska += squared_difference(odluka, target[i][j]);
         }
         ukupnaPogreska += inputPogreska / output.size();
     }

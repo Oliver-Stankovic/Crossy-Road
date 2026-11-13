@@ -5,22 +5,6 @@
 #include <random>
 using namespace std;
 
-// double izracunajPogresku(const NeuralNetwork& network,
-//                         const vector<vector<double>>& input,
-//                         const vector<double>& target) {
-//     double ukupnaPogreska = 0.0;
-
-//     for (size_t i = 0; i < input.size(); ++i) {
-//         const auto output = network.forward(input[i]);
-//         double razlika = target[i] - output[0];
-//         ukupnaPogreska += razlika * razlika;
-//         // kvadriramo razliku da se poz i neg pogreske ne poniste pri zbrajanju
-//         // i da veci promasaji vise utjecu na ukupnu pogresku
-//     }
-
-//     return ukupnaPogreska / input.size(); // vraca prosjek
-//}
-
 int main() {
     GA_Config gaconfig;
     GeneticAlgorithm algoritam(gaconfig);
@@ -46,4 +30,7 @@ int main() {
         }
         cout << "]\n";
     }
+
+    //najbolji.neuralnetwork.outputParameters();
+
 }
