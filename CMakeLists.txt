@@ -15,3 +15,7 @@ file(GLOB_RECURSE ProjektR_Sources "${CMAKE_SOURCE_DIR}/src/model/*.cpp" "${CMAK
 add_executable(Projekt-R ${ProjektR_Sources})
 target_compile_features(Projekt-R PRIVATE cxx_std_17)
 target_link_libraries(Projekt-R PRIVATE SFML::Graphics SFML::Window SFML::System)
+
+add_subdirectory(src/GenAlgo)
+add_subdirectory(src/OsnovnaNeuronskaMreza)
+add_subdirectory(src/GANM)
