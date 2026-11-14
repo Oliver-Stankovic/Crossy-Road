@@ -94,6 +94,8 @@ public:
     {
         playerPosition.x = MAP_WIDTH / 2;
         AddRow(RowType::Grass);
+        //Remove random grass tile to prevent it from spawning inside the player
+        rows.back().RemoveLastObstacle();
         AddRow(RowType::Grass);
         for (int32_t i = 0; i < GEN_NEXT_ROWS - 1; i++)
         {
