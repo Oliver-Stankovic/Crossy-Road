@@ -64,7 +64,7 @@ private:
     //--------------------------------------------------
     void evaluateAll(vector<Candidate>& pop, CrossyRoadModel model, int maxKoraka) const {
         for (Candidate& cand : pop) {
-            model.Start(); //zelim da ovako radi
+            model.Reset(); //zelim da ovako radi
             int korak = 0;
             while (model.isPlayerAlive() && korak < maxKoraka) {
                 vector<float> zrake = model.castRays(32);
