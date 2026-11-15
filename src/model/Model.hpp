@@ -62,6 +62,10 @@ class CrossyRoadModel
         return dist;
     }
 public:
+    CrossyRoadModel()
+    {
+        Reset();
+    }
     bool isPlayerAlive() const
     {
         return playerAlive;
@@ -90,9 +94,14 @@ public:
     {
         return static_cast<int32_t>(rows.size()) - (playerPosition.y + lastRowIndex);
     }
-    void Start()
+    void Reset()
     {
+        playerAlive = true;
+        rows.clear();
+        lastRowIndex = 0;
+        playerScore = 0;
         playerPosition.x = MAP_WIDTH / 2;
+        playerPosition.y = 0;
         AddRow(RowType::Grass);
         //Remove random grass tile to prevent it from spawning inside the player
         rows.back().RemoveLastObstacle();

@@ -33,7 +33,6 @@ int main() {
 
     NeuralNetwork mrezaZaIgru(postavkeIgre);
     CrossyRoadModel model;
-    model.Start();
 
     const int maxKoraka = 1000;
     int korak = 0;
