@@ -65,6 +65,10 @@ public:
     {
         return obstacles.at(index);
     }
+    void RemoveLastObstacle()
+    {
+        obstacles.erase(obstacles.end());
+    }
 
     void Setup(const RowType type, const float speed)
     {

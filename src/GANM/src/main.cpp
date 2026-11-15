@@ -8,6 +8,26 @@
 
 using namespace std;
 
+vector<double> pretvoriZrake(const vector<float>& zrake) {
+    vector<double> ulazi;
+    for(float zraka : zrake) {
+        ulazi.push_back(static_cast<double>(zraka));
+    }
+    return ulazi;
+}
+
+Input odaberiPotez(const vector<double>& izlazi) {
+    const Input potezi[] = {
+        Input::None, Input::Left, Input::Right, Input::Up, Input::Down
+    };
+
+    size_t najboljiIndeks = 0;
+    for(size_t i = 1; i < izlazi.size(); ++i) {
+        if (izlazi[i] > izlazi[najboljiIndeks]) najboljiIndeks = i;
+    }
+    return potezi[najboljiIndeks];
+}
+
 int main() {
 
     NN_Config postavkeIgre;
