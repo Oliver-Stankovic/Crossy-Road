@@ -25,15 +25,15 @@ struct GA_Config{
     size_t reportEvery    = 5;   // print stats every N generations
     
     //
-    vector<vector<double>> input = {
-        {0.0, 0.0, 0.0},
-        {1.0, 0.0, 2.0},
-        {2.0, 1.0, -4.0},
-        {-1.0, -2.0, 6.0},
-        {3.0, 2.0, 1.0}
-    };
+    // vector<vector<double>> input = {
+    //     {0.0, 0.0, 0.0},
+    //     {1.0, 0.0, 2.0},
+    //     {2.0, 1.0, -4.0},
+    //     {-1.0, -2.0, 6.0},
+    //     {3.0, 2.0, 1.0}
+    // };
     
-    vector<vector<double>> target = {{0.0, 0.0}, {4.0, 0.0}, {-3.0, 0.0}, {10.0, -4.0}, {1.0, 5.5}};
+    // vector<vector<double>> target = {{0.0, 0.0}, {4.0, 0.0}, {-3.0, 0.0}, {10.0, -4.0}, {1.0, 5.5}};
 };
 
 

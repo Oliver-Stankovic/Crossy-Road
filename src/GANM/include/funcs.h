@@ -1,8 +1,23 @@
 #pragma once
 
-#include <iostream>
+#include <algorithm>
+
 #include "candidate.h"
 
+//-----------------------------------------------------------------------------------------
+//aktivacijske funkcije
+//-----------------------------------------------------------------------------------------
+double ReLU(double x) {
+    return std::max(0.0, x);
+}
+
+double Sigmoid(double x){
+    return 1.0 / (1.0 + exp(-x));
+}
+
+//-----------------------------------------------------------------------------------------
+//evaluacijske funkcije
+//-----------------------------------------------------------------------------------------
 template <typename T>
 T squared_difference(T a, T b) {
     T diff = a - b;
@@ -46,4 +61,31 @@ void BinarnaFunkcija(Candidate& cand, vector<vector<double>> input, vector<vecto
     }
     cand.fitness = ukupnaPogreska / input.size();
 }
-    
+
+
+
+//-------------------------
+//Dosl samo static cast iz float u double
+//------------------------
+vector<double> pretvoriZrake(const vector<float>& zrake) {
+    vector<double> ulazi;
+    for(float zraka : zrake) {
+        ulazi.push_back(static_cast<double>(zraka));
+    }
+    return ulazi;
+}
+
+//-------------------------------------
+//Odabir najvece vrijednosti medu 5 izlazna
+//-------------------------------------
+Input odaberiPotez(const vector<double>& izlazi) {
+    const Input potezi[] = {
+        Input::None, Input::Left, Input::Right, Input::Up, Input::Down
+    };
+
+    size_t najboljiIndeks = 0;
+    for(size_t i = 1; i < izlazi.size(); ++i) {
+        if (izlazi[i] > izlazi[najboljiIndeks]) najboljiIndeks = i;
+    }
+    return potezi[najboljiIndeks];
+}

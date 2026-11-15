@@ -5,7 +5,7 @@
 #include <functional>
 
 #include "configs.h"
-#include "activationfuncs.h"
+#include "funcs.h"
 
 using namespace std;
 

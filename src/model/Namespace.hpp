@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
+#include <memory>
 
 using std::int32_t;
 using std::uint32_t;

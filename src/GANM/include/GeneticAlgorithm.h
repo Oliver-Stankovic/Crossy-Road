@@ -7,7 +7,9 @@
 
 #include "configs.h"
 #include "candidate.h"
-#include "evaluationfuncs.h"
+#include "funcs.h"
+#include "../../model/Input.hpp"
+#include "../../model/Model.hpp"
 
 class GeneticAlgorithm{
 public: 
@@ -21,15 +23,15 @@ public:
             throw invalid_argument("tournamentSize must be >= 1");
     }
 
-    Candidate run() {
+    Candidate run(CrossyRoadModel model, int maxKoraka) {
         initialisePopulation();
-        evaluateAll(population_);
+        evaluateAll(population_, model, maxKoraka);
         sortByFitness(population_);
         best_ = population_.front();
 
         for (size_t gen = 1; gen <= cfg_.generations; ++gen) {
             population_ = nextGeneration();  
-            evaluateAll(population_);
+            evaluateAll(population_, model, maxKoraka);
             sortByFitness(population_);
             if (population_.front().fitness < best_.value().fitness)
                 best_ = population_.front();  
@@ -60,10 +62,21 @@ private:
     //Evaluira sve jedinke u populaciji na temelju odredene
     //funckije kvalitete
     //--------------------------------------------------
-    void evaluateAll(vector<Candidate>& pop) const {
+    void evaluateAll(vector<Candidate>& pop, CrossyRoadModel model, int maxKoraka) const {
         for (Candidate& cand : pop) {
-            SredinaKvadratnihRazlika(cand, cfg_.input, cfg_.target);
-            //kod je prebacen u "outputevaluators.h"
+            model.Start(); //zelim da ovako radi
+            int korak = 0;
+            while (model.isPlayerAlive() && korak < maxKoraka) {
+                vector<float> zrake = model.castRays(32);
+                vector<double> ulazi = pretvoriZrake(zrake);
+                vector<double> ocjenePoteza = cand.neuralnetwork.forward(ulazi);
+                Input potez = odaberiPotez(ocjenePoteza);
+
+                model.Update(0.016f, potez);
+                ++korak;
+            }
+            if (korak == maxKoraka) cand.fitness = 0; //pretpostavljam da se samo nije micao cijelo vrijeme
+            else cand.fitness = korak;
         }
 }
 
