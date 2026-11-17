@@ -6,6 +6,8 @@
 
 #include "configs.h"
 #include "funcs.h"
+#include "activationfuncs.h"
+#include "../../model/Input.hpp"
 
 using namespace std;
 
@@ -47,9 +49,10 @@ public:
                     neuron.weights.push_back(initialvalue(rng_));
                 }
                 neuron.bias = initialvalue(rng_); //pocetni bias nije 0.0
-                if (layer != (config.architecture.size()-1)){
+
+                //if (layer != (config.architecture.size()-1)){ //zadnji sloj
                     neuron.activation = ReLU;
-                }
+                //}
                 neurons.push_back(neuron);
             }
             layers_.push_back(neurons);
@@ -57,7 +60,7 @@ public:
 }
 
     // prolaz unaprijed: izlazi jednog sloja postaju ulazi sljedeceg
-    vector<double> forward(const vector<double> inputs) const {
+    Input forward(const vector<double> inputs) const {
         vector<double> values = inputs;
         for (const auto& layer : layers_) {
             vector<double> outputs;
@@ -66,7 +69,7 @@ public:
             }
             values = outputs;
         }
-        return values;
+        return odaberiPotez_(values);
     }
 
     // ukupan broj parametara
@@ -134,4 +137,19 @@ private:
     //size_t inputCount_;
     vector<vector<Neuron>> layers_;
     mt19937 rng_;
+
+    //-------------------------------------
+    //Odabir najvece vrijednosti medu 5 izlazna
+    //-------------------------------------
+    Input odaberiPotez_(const vector<double>& izlazi) const{
+        const Input potezi[] = {
+            Input::None, Input::Left, Input::Right, Input::Up, Input::Down
+        };
+
+        size_t najboljiIndeks = 0;
+        for(size_t i = 1; i < izlazi.size(); ++i) {
+            if (izlazi[i] > izlazi[najboljiIndeks]) najboljiIndeks = i;
+        }
+        return potezi[najboljiIndeks];
+    }
 };

@@ -6,23 +6,23 @@
 using namespace std;
 
 struct NN_Config{
-    vector<size_t> architecture = {3, 6, 2};
+    vector<size_t> architecture = {32, 6, 5};
     uint32_t seed = 42;
-    double lowerinit = -10.0;
+    double lowerinit = 0.0;
     double upperinit = 10.0;
 };
 
 struct GA_Config{
-    size_t populationSize = 50;  // individuals per generation
-    size_t generations    = 200;  // how long to evolve
-    size_t tournamentSize = 5;    // selection pressure (bigger = greedier)
-    size_t eliteCount     = 5;    // best individuals copied unchanged
+    size_t populationSize = 10;  // individuals per generation
+    size_t generations    = 10;  // how long to evolve
+    size_t tournamentSize = 3;    // selection pressure (bigger = greedier)
+    size_t eliteCount     = 2;    // best individuals copied unchanged
     double crossoverRate       = 0.9;  // probability a pair is recombined
     double mutationRate        = 0.02;  // probability PER GENE of mutating
     double mutationSigma       = 0.15; // mutation step as a percentage of current value
     double blendAlpha          = 0.75;  // BLX-alpha: how far children may stray
     uint32_t seed         = 42;   // RNG seed (reproducibility)
-    size_t reportEvery    = 5;   // print stats every N generations
+    size_t reportEvery    = 1;   // print stats every N generations
     
     //
     // vector<vector<double>> input = {

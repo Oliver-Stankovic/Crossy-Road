@@ -4,6 +4,7 @@
 #include <random>
 #include <optional>
 #include <algorithm>
+#include <SFML/System/Vector2.hpp>
 
 #include "configs.h"
 #include "candidate.h"
@@ -27,17 +28,22 @@ public:
         initialisePopulation();
         evaluateAll(population_, model, maxKoraka);
         sortByFitness(population_);
-        best_ = population_.front();
+        //best_ = population_.front();
 
         for (size_t gen = 1; gen <= cfg_.generations; ++gen) {
             population_ = nextGeneration();  
             evaluateAll(population_, model, maxKoraka);
             sortByFitness(population_);
-            if (population_.front().fitness < best_.value().fitness)
-                best_ = population_.front();  
+            // if (population_.front().fitness > best_.value().fitness)
+            //     best_ = population_.front();  
             
             if (gen % cfg_.reportEvery == 0){ //Report every reportEvery generations
-                cout << "Best candidate fitness for generation " << gen << " :" << best_.value().fitness << "\n";
+                cout << "Best candidate fitness for generation " << gen << " :" << population_.front().fitness << "\n";
+                double totalfitness = 0;
+                for (Candidate cand : population_){
+                    totalfitness += cand.fitness;
+                }
+                cout << "Average fitness for generation " << gen << " :" << totalfitness/cfg_.populationSize << "\n";
             }
         }
 
@@ -54,7 +60,7 @@ private:
             NN_Config config;
             config.seed = rng_();
 
-            population_.push_back(Candidate{NeuralNetwork(config), 0.0});
+            population_.push_back(Candidate{config});
         }
 }
 
@@ -69,21 +75,21 @@ private:
             while (model.isPlayerAlive() && korak < maxKoraka) {
                 vector<float> zrake = model.castRays(32);
                 vector<double> ulazi = pretvoriZrake(zrake);
-                vector<double> ocjenePoteza = cand.neuralnetwork.forward(ulazi);
-                Input potez = odaberiPotez(ocjenePoteza);
+                Input potez = cand.neuralnetwork.forward(ulazi); 
 
                 model.Update(0.016f, potez);
                 ++korak;
             }
-            if (korak == maxKoraka) cand.fitness = 0; //pretpostavljam da se samo nije micao cijelo vrijeme
-            else cand.fitness = korak;
+            // if (korak == maxKoraka) cand.fitness = 0; //pretpostavljam da se samo nije micao cijelo vrijeme
+            // else 
+            cand.fitness = model.getPlayerPosition().y == 0.0f ? 0.0 : -model.getPlayerPosition().y; //da nije -0
         }
 }
 
     static void sortByFitness(vector<Candidate>& pop) {
         sort(pop.begin(), pop.end(),
                   [](const Candidate& a, const Candidate& b) {
-                      return a.fitness < b.fitness;  // best (lowest) first
+                      return a.fitness > b.fitness;  // best (highest) first
                   });
     }
 
@@ -95,7 +101,7 @@ private:
         const Candidate* winner = &population_[pick(rng_)];
         for (size_t i = 1; i < cfg_.tournamentSize; ++i) {
             const Candidate* challenger = &population_[pick(rng_)];
-            if (challenger->fitness < winner->fitness) winner = challenger;
+            if (challenger->fitness > winner->fitness) winner = challenger;
         }
         return *winner;
     }

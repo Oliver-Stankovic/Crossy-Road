@@ -9,16 +9,16 @@ using namespace std;
 
 int main() {
 
-    NN_Config postavkeIgre;
-    postavkeIgre.architecture = {32, 6, 5};
+    // NN_Config postavkeIgre;
+    // postavkeIgre.architecture = {32, 6, 5};
 
-    NeuralNetwork mrezaZaIgru(postavkeIgre);
+    // NeuralNetwork mrezaZaIgru(postavkeIgre);
     CrossyRoadModel model;
 
     GA_Config gaconfig;
     GeneticAlgorithm algoritam(gaconfig);
 
-    const int maxKoraka = 1000;
+    const int maxKoraka = 100;
 
     Candidate najbolji = algoritam.run(model, maxKoraka);
 
